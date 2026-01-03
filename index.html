@@ -143,6 +143,8 @@
     </script>
 </head>
 <body>
+    <audio id="bg-music" src="Phep mau.mp3" preload="auto"></audio>
+
     <div id="loading-screen">
         <div class="loader"></div>
         <div style="font-size: 12px; color: #888;">Đang tải phép thuật...</div>
@@ -175,6 +177,13 @@
         import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
         import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
         import { FilesetResolver, HandLandmarker } from "@mediapipe/tasks-vision";
+
+        // ======================
+        // 🎵 MUSIC CONTROL
+        // ======================
+        const bgMusic = document.getElementById("bg-music");
+        bgMusic.loop = true;
+        bgMusic.volume = 0.5; // chỉnh âm lượng (0.0 - 1.0)
 
         // ==========================================
         // 🔒 MAGIC LOCK MODULE
@@ -315,6 +324,15 @@
                 setTimeout(() => {
                     this.isLocked = false; this.isSequenceActive = false;
                     document.getElementById('final-text').style.opacity = 1;
+                        // ▶ PLAY MUSIC
+                bgMusic.play().catch(() => {
+                     console.log("Autoplay bị chặn, sẽ phát khi có tương tác");
+                });
+                document.body.addEventListener("click", () => {
+                    if (bgMusic.paused) bgMusic.play();
+                }, { once: true });
+
+
                     const overlay = document.getElementById('lock-overlay');
                     overlay.style.opacity = 0;
                     setTimeout(() => { overlay.style.display = 'none'; }, 2000);
@@ -569,7 +587,7 @@
             
             if (thumbIndexDist < 0.05 && extendedFingers >= 2) currentGesture = "OK";
             else if (extendedFingers >= 4) currentGesture = "OPEN";
-            else if (extendedFingers <= 1) currentGesture = "FIST";
+            else if (extendedFingers <= 5) currentGesture = "HEART";
 
             if (currentGesture !== lastGesture) {
                 lastGesture = currentGesture;
@@ -578,14 +596,14 @@
                     aiStatus.innerText = "🖐 STOP";
                     aiStatus.style.color = "#f55";
                     stopSequenceAndReset(); 
-                } 
-                else if (currentGesture === "FIST") {
-                    aiStatus.innerText = "✊ START";
+                                } 
+                else if (currentGesture === "HEART") {
+                    aiStatus.innerText = "🫶 START";
                     aiStatus.style.color = "#5f5";
                     if (!isSequenceRunning) startAutoSequence();
                 }
-                else if (currentGesture === "HEART") {
-                    aiStatus.innerText = "🫶 START";
+                else if (currentGesture === "FIST") {
+                    aiStatus.innerText = "✊ START";
                     aiStatus.style.color = "#ff0";
                     if (!isSequenceRunning && !isGalleryOpen) startAutoSequence();
                 }
@@ -602,6 +620,8 @@
             if (frontCoverPivot) frontCoverPivot.userData.targetAngle = 0;
             pagePivots.forEach(p => { p.targetAngle = 0; });
             stopLyrics();
+            
+
         }
 
         async function startAutoSequence() {
@@ -636,7 +656,7 @@
                 if (!isSequenceRunning) return;
                 mainPolaroids.forEach(p => p.userData.isZoomed = false);
                 mainPolaroids[i].userData.isZoomed = true; 
-                await delay(1000); 
+                await delay(2000); 
             }
 
             if (!isSequenceRunning) return;
@@ -646,7 +666,7 @@
 
             if (chapterIdx < STORIES.length - 1) {
                 await delay(500);
-                flipPage(); await delay(1500); 
+                flipPage(); await delay(1800); 
                 runChapterSequence(chapterIdx + 1);
             } else {
                 aiStatus.innerText = "END";
