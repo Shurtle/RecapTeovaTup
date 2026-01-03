@@ -656,7 +656,7 @@
                 if (!isSequenceRunning) return;
                 mainPolaroids.forEach(p => p.userData.isZoomed = false);
                 mainPolaroids[i].userData.isZoomed = true; 
-                await delay(2000); 
+                await delay(1800); 
             }
 
             if (!isSequenceRunning) return;
@@ -706,7 +706,7 @@
         currentSubtitleEl.style.opacity = 1;
 
         // 🎬 CINEMATIC TIMING
-        const duration = 1500 + lines[index].length * 40; // base + theo độ dài chữ
+        const duration = 1200 + lines[index].length * 40; // base + theo độ dài chữ
 
         // fade-out chậm
         setTimeout(() => {
